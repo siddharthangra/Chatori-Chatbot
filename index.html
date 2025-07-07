@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dummy Food & Co. - Order with Chatori</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <h1><i class="fas fa-utensils"></i> Dummy Food & Co.</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#menu" class="nav-link">Menu</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Dummy Food & Co.</h1>
+            <p>🍕 Delicious food at your fingertips! Meet <strong>Chatori</strong>, your AI food assistant who will help you order, get recommendations, and answer all your food questions!</p>
+            <button class="cta-button" onclick="toggleChatbot()">
+                <i class="fas fa-robot"></i> Chat with Chatori Now!
+            </button>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu">
+        <div class="container">
+            <h2 class="section-title">Our Delicious Menu</h2>
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🍛 Main Dishes</h3>
+                    <div class="menu-item">
+                        <span class="item-name">Pav Bhaji</span>
+                        <span class="item-price">₹60</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Chole Bhature</span>
+                        <span class="item-price">₹70</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Pizza</span>
+                        <span class="item-price">₹80</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Vegetable Biryani</span>
+                        <span class="item-price">₹90</span>
+                    </div>
+                </div>
+                
+                <div class="menu-card">
+                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🥞 Dosas & Snacks</h3>
+                    <div class="menu-item">
+                        <span class="item-name">Masala Dosa</span>
+                        <span class="item-price">₹60</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Rava Dosa</span>
+                        <span class="item-price">₹70</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Vada Pav</span>
+                        <span class="item-price">₹40</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="item-name">Samosa</span>
+                        <span class="item-price">₹50</span>
+                    </div>
+                </div>
+                
+                <div class="menu-card">
+                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🥤 Beverages</h3>
+                    <div class="menu-item">
+                        <span class="item-name">Mango Lassi</span>
+                        <span class="item-price">₹50</span>
+                    </div>
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-glass-cheers" style="font-size: 2rem; color: #fbbf24;"></i>
+                        <p style="margin-top: 1rem;">More drinks available!<br>Ask Chatori for the full menu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>123 Food Street, Lucknow, UP</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <p>+91 98765 43210</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <p>10:00 AM - 11:00 PM</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Dummy Food & Co. All rights reserved. | Powered by Chatori AI</p>
+        </div>
+    </footer>
+
+    
+    <df-messenger
+        intent="WELCOME"
+        chat-title="Chatori"
+        agent-id="d280b997-e427-42a9-ab93-a10738ca77b4"
+        language-code="en"
+    ></df-messenger>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
