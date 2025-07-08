@@ -9,6 +9,7 @@ cnx = mysql.connector.connect(
     user=os.getenv("DB_USER"),
     password=os.getenv("DB_PASSWORD"),
     database=os.getenv("DB_NAME")
+    port=int(os.getenv("DB_PORt", 3306))
 )
 
 def get_order_status(order_id : int):
