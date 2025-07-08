@@ -40,6 +40,7 @@ def get_next_order_id():
 
     cursor.close()
     cnx.close()
+    print("DEBUG - get_next_order_id result:", result) #debugginhg
 
     if result[0] is None:
         return 1    

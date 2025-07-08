@@ -125,6 +125,7 @@ def complete_order(parameteres: dict, session_id: str):
     else:
         order = inprogress_orders[session_id]
         order_id = save_to_db(order)
+        print("DEBUG - Order ID from save_to_db:", order_id) #debug finding
 
         if order_id == -1:
             fulfillment_text= "Sorry, I couldn't process your order due to a backend error. "\
@@ -144,6 +145,7 @@ def complete_order(parameteres: dict, session_id: str):
 
 def save_to_db(order: dict):
     next_order_id = database.get_next_order_id()
+    print("DEBUG - Next Order ID:", next_order_id) #debuging
 
     for food_items, quantity in order.items():
         rcode = database.insert_order_item(
@@ -151,12 +153,11 @@ def save_to_db(order: dict):
             quantity,
             next_order_id
         )
-
+        print(f"DEBUG - Inserted {food_items}: status code {rcode}") #debuggiing
         if rcode == -1:
             return -1
         
-    database.insert_order_tracking(next_order_id, "in progress")
-        
+    database.insert_order_tracking(next_order_id, "in progress")   
     return next_order_id
     
 def track_order(parameters : dict, session_id : str):
