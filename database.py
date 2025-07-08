@@ -41,10 +41,11 @@ def get_next_order_id():
     cursor.close()
     cnx.close()
 
-    if result is None:
-        return 1
+    if result[0] is None:
+        return 1    
     else:
         return result[0] + 1
+
     
 def insert_order_item(food_item, quantity, order_id):
     try:
