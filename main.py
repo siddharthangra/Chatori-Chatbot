@@ -119,45 +119,50 @@ def add_to_order(parameters: dict, session_id : str):
         "fulfillmentText" : fulfillment_text
     })
 
-# Slightly restructure complete_order to reduce logic before return
 def complete_order(parameteres: dict, session_id: str):
     if session_id not in inprogress_orders:
-        return JSONResponse(content={
-            "fulfillmentText": "I'm having a trouble finding your order. Sorry! Can you place a new order?"
-        })
-
-    order = inprogress_orders[session_id]
-    del inprogress_orders[session_id]
-
-    order_id = save_to_db(order)
-    if order_id == -1:
-        text = "Sorry, I couldn't process your order due to a backend error. Please try again."
+        fulfillment_text = "I'm having a trouble finding your order. Sorry! Can you place a new order?"
     else:
-        order_total = database.get_total_order_price(order_id)
-        text = f"Awesome. We have placed your order. Here is your order id #{order_id}. Your order total is Rs.{order_total}/- , which can be paid at the time of delivery."
+        order = inprogress_orders[session_id]
+        order_id, order_total = save_to_db(order)
 
-    print("DEBUG - Fulfillment text before response:", text)
+        if order_id == -1:
+            fulfillment_text = "Sorry, I couldn't process your order due to a backend error. Please place a new order again."
+        else:
+            fulfillment_text = f"Awesome. We have placed your order. Here is your order id #{order_id}. "\
+                               f"Your order total is Rs.{order_total}/-, which can be paid at the time of delivery."
+    
+        del inprogress_orders[session_id]
 
-    return JSONResponse(content={"fulfillmentText": text})
+    return JSONResponse(content={"fulfillmentText": fulfillment_text})
+
 
 
 
 def save_to_db(order: dict):
-    next_order_id = database.get_next_order_id()
-    print("DEBUG - Next Order ID:", next_order_id) #debuging
+    try:
+        next_order_id = database.get_next_order_id()
+        total_price = 0
 
-    for food_items, quantity in order.items():
-        rcode = database.insert_order_item(
-            food_items,
-            quantity,
-            next_order_id
-        )
-        print(f"DEBUG - Inserted {food_items}: status code {rcode}") #debuggiing
-        if rcode == -1:
-            return -1
-        
-    database.insert_order_tracking(next_order_id, "in progress")   
-    return next_order_id
+        for food_item, quantity in order.items():
+            rcode, item_total = database.insert_order_item(
+                food_item,
+                quantity,
+                next_order_id
+            )
+
+            if rcode == -1:
+                return -1, 0
+            
+            total_price += item_total
+
+        database.insert_order_tracking(next_order_id, "in progress")
+        return next_order_id, total_price
+    
+    except Exception as e:
+        print(f"Error in save_to_db: {e}")
+        return -1, 0
+
     
 def track_order(parameters : dict, session_id : str):
     order_id = int(parameters['number'])

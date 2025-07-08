@@ -53,13 +53,14 @@ def insert_order_item(food_item, quantity, order_id):
         cnx = get_connection()
         cursor = cnx.cursor()
         quantity = int(quantity)
+
         get_item_query = "SELECT item_id, price FROM food_items WHERE name = %s"
         cursor.execute(get_item_query, (food_item,))
         result = cursor.fetchone()
 
         if not result:
             print(f"Food item '{food_item}' not found!")
-            return -1
+            return -1, 0
 
         item_id, price = result
         total_price = price * quantity
@@ -74,19 +75,18 @@ def insert_order_item(food_item, quantity, order_id):
         cursor.close()
         cnx.close()
         print("Order item inserted successfully!")
-        return 1
+        return 1, total_price
     
     except mysql.connector.Error as err:
         print(f"Error inserting order item: {err}")
-
         cnx.rollback()
-
-        return -1
+        return -1, 0
     
     except Exception as e:
         print(f"An error occurred: {e}")
         cnx.rollback()
-        return -1 
+        return -1, 0
+
 
 
 def get_total_order_price(order_id):
