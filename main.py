@@ -142,10 +142,9 @@ def complete_order(parameteres: dict, session_id: str):
 def save_to_db(order: dict):
     try:
         next_order_id = database.get_next_order_id()
-        total_price = 0
 
         for food_item, quantity in order.items():
-            rcode, item_total = database.insert_order_item(
+            rcode = database.insert_order_item(
                 food_item,
                 quantity,
                 next_order_id
@@ -153,15 +152,17 @@ def save_to_db(order: dict):
 
             if rcode == -1:
                 return -1, 0
-            
-            total_price += item_total
 
         database.insert_order_tracking(next_order_id, "in progress")
+
+        # Let get_total_order_price() fetch total from DB after insert
+        total_price = database.get_total_order_price(next_order_id)
         return next_order_id, total_price
-    
+
     except Exception as e:
         print(f"Error in save_to_db: {e}")
         return -1, 0
+
 
     
 def track_order(parameters : dict, session_id : str):
