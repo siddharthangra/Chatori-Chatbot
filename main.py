@@ -119,27 +119,27 @@ def add_to_order(parameters: dict, session_id : str):
         "fulfillmentText" : fulfillment_text
     })
 
+# Slightly restructure complete_order to reduce logic before return
 def complete_order(parameteres: dict, session_id: str):
     if session_id not in inprogress_orders:
-        fulfillment_text = "I'm having a trouble finding your order. Sorry! can you place a new order?"
+        return JSONResponse(content={
+            "fulfillmentText": "I'm having a trouble finding your order. Sorry! Can you place a new order?"
+        })
+
+    order = inprogress_orders[session_id]
+    del inprogress_orders[session_id]
+
+    order_id = save_to_db(order)
+    if order_id == -1:
+        text = "Sorry, I couldn't process your order due to a backend error. Please try again."
     else:
-        order = inprogress_orders[session_id]
-        order_id = save_to_db(order)
-        print("DEBUG - Order ID from save_to_db:", order_id)
+        order_total = database.get_total_order_price(order_id)
+        text = f"Awesome. We have placed your order. Here is your order id #{order_id}. Your order total is Rs.{order_total}/- , which can be paid at the time of delivery."
 
-        if order_id == -1:
-            fulfillment_text= "Sorry, I couldn't process your order due to a backend error. Please place a new order again"
-        else:
-            order_total = database.get_total_order_price(order_id)
-            fulfillment_text = f"Awesome. We have placed your order. " \
-                               f"Here is your order id #{str(order_id)}. " \
-                               f"Your order total is Rs.{order_total}/- , which can be paid at the time of delivery."
+    print("DEBUG - Fulfillment text before response:", text)
 
-        del inprogress_orders[session_id]
+    return JSONResponse(content={"fulfillmentText": text})
 
-    print("DEBUG - Fulfillment text before response:", fulfillment_text)
-
-    return JSONResponse(content={ "fulfillmentText": fulfillment_text })
 
 
 def save_to_db(order: dict):
