@@ -50,16 +50,17 @@ def insert_order_item(food_item, quantity, order_id):
     try:
         cnx = get_connection()
         cursor = cnx.cursor()
-        get_price_query = "SELECT price FROM food_items WHERE name = %s"
-        cursor.execute(get_price_query, (food_item,))
+        quantity = int(quantity)
+        get_item_query = "SELECT item_id, price FROM food_items WHERE name = %s"
+        cursor.execute(get_item_query, (food_item,))
         result = cursor.fetchone()
 
-        price = result[0]
+        if not result:
+            print(f"Food item '{food_item}' not found!")
+            return -1
+
+        item_id, price = result
         total_price = price * quantity
-        get_itemid = "Select item_id from food_items where name = %s"
-        cursor.execute(get_itemid,(food_item,))
-        result = cursor.fetchone()
-        item_id = result[0]
 
         insert_query = """
         INSERT INTO orders (order_id, item_id, quantity, total_price)
