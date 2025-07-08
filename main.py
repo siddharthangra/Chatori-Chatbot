@@ -1,14 +1,25 @@
 from fastapi import FastAPI
 from fastapi import Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 import database
 import useful_functions
+import os
 
 app = FastAPI()
 
 inprogress_orders = {} 
 rating_list = {}
 orderlength = {}
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="static")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def serve_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/")
 async def handle_request(request : Request):
