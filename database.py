@@ -90,7 +90,9 @@ def insert_order_item(food_item, quantity, order_id):
 def get_total_order_price(order_id):
     cnx = get_connection()
     cursor = cnx.cursor()
-    query = f"SELECT get_total_order_price({order_id})"
+    query = """SELECT SUM(total_price) as total_order_price
+            FROM orders 
+            WHERE order_id = %s"""
     cursor.execute(query)
 
     result = cursor.fetchone()[0]
