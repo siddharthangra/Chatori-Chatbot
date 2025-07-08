@@ -47,60 +47,43 @@ def get_next_order_id():
     else:
         return result[0] + 1
 
-    
 def insert_order_item(food_item, quantity, order_id):
     try:
         cnx = get_connection()
         cursor = cnx.cursor()
-        quantity = int(quantity)
-
-        get_item_query = "SELECT item_id, price FROM food_items WHERE name = %s"
-        cursor.execute(get_item_query, (food_item,))
-        result = cursor.fetchone()
-
-        if not result:
-            print(f"Food item '{food_item}' not found!")
-            return -1, 0
-
-        item_id, price = result
-        total_price = price * quantity
-
-        insert_query = """
-        INSERT INTO orders (order_id, item_id, quantity, total_price)
-        VALUES (%s, %s, %s, %s)
-        """
-        cursor.execute(insert_query, (order_id, item_id, quantity, total_price))
+        cursor.callproc('insert_order_item', (food_item, quantity, order_id))
         cnx.commit()
 
         cursor.close()
         cnx.close()
         print("Order item inserted successfully!")
-        return 1, total_price
-    
+
+        return 1
+
     except mysql.connector.Error as err:
         print(f"Error inserting order item: {err}")
         cnx.rollback()
-        return -1, 0
-    
+
+        return -1
+
     except Exception as e:
         print(f"An error occurred: {e}")
         cnx.rollback()
-        return -1, 0
+
+        return -1
 
 
 
 def get_total_order_price(order_id):
     cnx = get_connection()
     cursor = cnx.cursor()
-    query = """SELECT SUM(total_price) as total_order_price
-            FROM orders 
-            WHERE order_id = %s"""
-    cursor.execute(query, (order_id,))
+    query = f"SELECT get_total_order_price({order_id})"
+    cursor.execute(query)
 
     result = cursor.fetchone()[0]
 
     cursor.close()
-    cnx.close()
+
     return result
 
 def insert_order_tracking(order_id, status):
