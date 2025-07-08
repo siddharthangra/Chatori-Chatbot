@@ -125,22 +125,21 @@ def complete_order(parameteres: dict, session_id: str):
     else:
         order = inprogress_orders[session_id]
         order_id = save_to_db(order)
-        print("DEBUG - Order ID from save_to_db:", order_id) #debug finding
+        print("DEBUG - Order ID from save_to_db:", order_id)
 
         if order_id == -1:
-            fulfillment_text= "Sorry, I couldn't process your order due to a backend error. "\
-                                "Please place a new order again"
+            fulfillment_text= "Sorry, I couldn't process your order due to a backend error. Please place a new order again"
         else:
             order_total = database.get_total_order_price(order_id)
-            fulfillment_text = f"Awesome. We have placed your order. "\
-                                f"Here is your order id #{order_id}. "\
-                                f"Your order total is Rs.{order_total}/- , which can be paid at the time of delivery."
-    
+            fulfillment_text = f"Awesome. We have placed your order. " \
+                               f"Here is your order id #{str(order_id)}. " \
+                               f"Your order total is Rs.{order_total}/- , which can be paid at the time of delivery."
+
         del inprogress_orders[session_id]
 
-    return JSONResponse(content= {
-        "fulfillmentText" : fulfillment_text
-    })
+    print("DEBUG - Fulfillment text before response:", fulfillment_text)
+
+    return JSONResponse(content={ "fulfillmentText": fulfillment_text })
 
 
 def save_to_db(order: dict):
