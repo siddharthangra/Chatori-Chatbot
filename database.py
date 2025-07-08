@@ -50,8 +50,22 @@ def insert_order_item(food_item, quantity, order_id):
     try:
         cnx = get_connection()
         cursor = cnx.cursor()
-        cursor.callproc('insert_order_item', (food_item, quantity, order_id))
+        get_price_query = "SELECT price FROM food_items WHERE name = %s"
+        cursor.execute(get_price_query, (food_item,))
+        result = cursor.fetchone()
 
+        price = result[0]
+        total_price = price * quantity
+        get_itemid = "Select item_id from food_items where name = %s"
+        cursor.execute(get_itemid,(food_item,))
+        result = cursor.fetchone()
+        item_id = result[0]
+
+        insert_query = """
+        INSERT INTO orders (order_id, item_id, quantity, total_price)
+        VALUES (%s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (order_id, item_id, quantity, total_price))
         cnx.commit()
 
         cursor.close()
