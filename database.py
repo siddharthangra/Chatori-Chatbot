@@ -4,7 +4,13 @@ import mysql.connector
 
 load_dotenv()
 
-
+cnx = mysql.connector.connect(
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME")
+    port=int(os.getenv("DB_PORT", 3306))
+)
 
 def get_order_status(order_id : int):
     cursor = cnx.cursor()
@@ -14,7 +20,7 @@ def get_order_status(order_id : int):
     result = cursor.fetchone()
 
     cursor.close()
-
+    cnx.close()
     if result is not None:
         return result[0]
     else:
@@ -29,6 +35,7 @@ def get_next_order_id():
     result = cursor.fetchone()[0]
 
     cursor.close()
+    cnx.close()
 
     if result is None:
         return 1
@@ -43,6 +50,7 @@ def insert_order_item(food_item, quantity, order_id):
         cnx.commit()
 
         cursor.close()
+        cnx.close()
         print("Order item inserted successfully!")
         return 1
     
@@ -67,6 +75,7 @@ def get_total_order_price(order_id):
     result = cursor.fetchone()[0]
 
     cursor.close()
+    cnx.close()
     return result
 
 def insert_order_tracking(order_id, status):
@@ -77,6 +86,7 @@ def insert_order_tracking(order_id, status):
     cnx.commit()
 
     cursor.close()
+    cnx.close()
 
 def get_order_items(order_id : int):
     cursor = cnx.cursor()
@@ -90,6 +100,7 @@ def get_order_items(order_id : int):
     cursor.execute(query,(order_id,))
     result = cursor.fetchall()
     cursor.close()
+    cnx.close()
 
     if not result:
         return -1
