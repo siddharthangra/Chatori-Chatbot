@@ -93,7 +93,7 @@ def get_total_order_price(order_id):
     query = """SELECT SUM(total_price) as total_order_price
             FROM orders 
             WHERE order_id = %s"""
-    cursor.execute(query)
+    cursor.execute(query, (order_id,))
 
     result = cursor.fetchone()[0]
 
