@@ -36,7 +36,7 @@ def get_next_order_id():
     query = "SELECT MAX(order_id) FROM orders"
     cursor.execute(query)
 
-    result = cursor.fetchone()[0]
+    result = cursor.fetchone()
 
     cursor.close()
     cnx.close()
@@ -44,7 +44,7 @@ def get_next_order_id():
     if result is None:
         return 1
     else:
-        return result + 1
+        return result[0] + 1
     
 def insert_order_item(food_item, quantity, order_id):
     try:
