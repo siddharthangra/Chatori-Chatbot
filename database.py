@@ -74,16 +74,24 @@ def insert_order_item(food_item, quantity, order_id):
 
 
 def get_price_of_item(item):
-    cnx = get_connection()
-    cursor = cnx.cursor()
-    query = """ Select name from food_items where name = %s"""
-    cursor.execute(query,(item,))
-
-    result = cursor.fetchone()[0]
-    cursor.close()
-    cnx.close()
-
-    return result 
+    try:
+        cnx = get_connection()
+        cursor = cnx.cursor()
+        query = "SELECT price FROM food_items WHERE name = %s"
+        cursor.execute(query, (item,))
+        
+        result = cursor.fetchone()
+        cursor.close()
+        cnx.close()
+        
+        if result:
+            return result[0]
+        else:
+            return -1  # Item not found
+            
+    except Exception as e:
+        print(f"Error getting price for item {item}: {e}")
+        return -1
 
 def get_total_order_price(order_id):
     cnx = get_connection()
