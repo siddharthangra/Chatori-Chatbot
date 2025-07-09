@@ -6,6 +6,8 @@ from fastapi.templating import Jinja2Templates
 import database
 import useful_functions
 import os
+import threading
+import time
 
 app = FastAPI()
 
@@ -124,22 +126,41 @@ def complete_order(parameteres: dict, session_id: str):
         fulfillment_text = "I'm having a trouble finding your order. Sorry! Can you place a new order?"
     else:
         order = inprogress_orders[session_id]
-        order_id, order_total = save_to_db(order)
+        order_id = database.get_next_order_id()
+        total_price = 0
 
-        if order_id == -1:
-            fulfillment_text = "Sorry, I couldn't process your order due to a backend error. Please place a new order again."
-        else:
-            fulfillment_text = f"Awesome. We have placed your order. Here is your order id #{order_id}. "\
-                               f"Your order total is Rs.{order_total}/-, which can be paid at the time of delivery."
+        for item, qty in order.items():
+            item_price = database.get_price_of_item(item)
+            total_price += item_price * int(qty)
+        
+        # order_id, order_total = save_to_db(order)
+        threading.Thread(target=save_order_background, args=(order, order_id)).start()
+        
+        #if order_id == -1:
+        #    fulfillment_text = "Sorry, I couldn't process your order due to a backend error. Please place a new order again."
+        #else:
+        fulfillment_text = f"Awesome. We have placed your order. Here is your order id #{order_id}. "\
+                            f"Your order total is Rs.{total_price}/-, which can be paid at the time of delivery."
     
         del inprogress_orders[session_id]
 
     return JSONResponse(content={"fulfillmentText": fulfillment_text})
 
+def save_order_background(order, order_id):
+    time.sleep(3)  
+    try:
+        print(f"Background saving for order #{order_id}")
+        for food_item, quantity in order.items():
+            rcode, _ = database.insert_order_item(food_item, quantity, order_id)
+            if rcode == -1:
+                print(f"Failed to insert {food_item}")
+        database.insert_order_tracking(order_id, "in progress")
+        print(f"Order #{order_id} saved successfully!")
+    except Exception as e:
+        print(f"Error while saving order in background: {e}")
 
 
-
-def save_to_db(order: dict):
+# def save_to_db(order: dict):
     try:
         next_order_id = database.get_next_order_id()
 

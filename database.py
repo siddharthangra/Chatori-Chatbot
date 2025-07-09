@@ -73,6 +73,17 @@ def insert_order_item(food_item, quantity, order_id):
         return -1
 
 
+def get_price_of_item(item):
+    cnx = get_connection()
+    cursor = cnx.cursor()
+    query = """ Select name from food_items where name = %s"""
+    cursor.execute(query,(item,))
+
+    result = cursor.fetchone()[0]
+    cursor.close()
+    cnx.close()
+
+    return result 
 
 def get_total_order_price(order_id):
     cnx = get_connection()
