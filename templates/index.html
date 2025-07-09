@@ -107,6 +107,31 @@
     ></df-messenger>
 
     <script>
+        function toggleChatbot() {
+            const dfMessenger = document.querySelector('df-messenger');
+            if (dfMessenger) {
+
+                dfMessenger.renderCustomText('Hello! I\'m Chatori, your food assistant. How can I help you today?');
+             
+                const messengerButton = dfMessenger.shadowRoot?.querySelector('df-messenger-chat')?.shadowRoot?.querySelector('div[role="button"]');
+                if (messengerButton) {
+                    messengerButton.click();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Give the messenger time to initialize
+            setTimeout(function() {
+                const dfMessenger = document.querySelector('df-messenger');
+                if (dfMessenger) {
+                    // Ensure the messenger is ready
+                    dfMessenger.addEventListener('df-messenger-loaded', function() {
+                        console.log('Chatori is ready!');
+                    });
+                }
+            }, 1000);
+        });
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('.header');
