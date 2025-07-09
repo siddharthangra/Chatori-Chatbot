@@ -48,8 +48,18 @@
                             alt="{{ item.name }}" 
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.5rem; margin-right: 1rem;">
                         <div>
-                            <span class="item-name" style="font-weight: 600; color: #b91c1c;">{{ item.name }}</span><br>
-                            <span class="item-price" style="color: #f59e0b;">₹{{ item.price }}</span>
+                            <div style="display: flex; align-items: center;">
+                                <img ...>
+                                <div>
+                                    <span class="item-name">{{ item.name }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Now this stays aligned to the right -->
+                            <div style="text-align: right;">
+                                <div class="item-price">₹{{ item.price }}</div>
+                                ⭐ Rating...
+                            </div>
                         </div>
                     </div>
 
