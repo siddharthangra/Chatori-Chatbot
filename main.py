@@ -213,7 +213,7 @@ def rating_order(parameters : dict, session_id : str):
             rating_list[session_id][item] = parameters["number"]
             orderlength[session_id] -= 1
             if(orderlength[session_id] == 0):
-                threading.Thread(target=rating_insertion, args=(session_id)).start()
+                threading.Thread(target=rating_insertion, args=(session_id,)).start()
                 fulfillment_text = "Thankyou for your feedback!"
             else:
                 item = items[-(orderlength[session_id])]
