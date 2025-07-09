@@ -151,7 +151,7 @@ def save_order_background(order, order_id):
     try:
         print(f"Background saving for order #{order_id}")
         for food_item, quantity in order.items():
-            rcode, _ = database.insert_order_item(food_item, quantity, order_id)
+            rcode, _ = database.insert_order_item(food_item, int(quantity), order_id)
             if rcode == -1:
                 print(f"Failed to insert {food_item}")
         database.insert_order_tracking(order_id, "in progress")
