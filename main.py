@@ -131,7 +131,7 @@ def complete_order(parameteres: dict, session_id: str):
 
         for item, qty in order.items():
             item_price = database.get_price_of_item(item)
-            total_price += item_price * int(qty)
+            total_price += int(item_price) * int(qty)
         
         # order_id, order_total = save_to_db(order)
         threading.Thread(target=save_order_background, args=(order, order_id)).start()
