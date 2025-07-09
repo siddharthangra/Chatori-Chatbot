@@ -161,30 +161,30 @@ def get_all_food_items():
     cursor = connection.cursor(dictionary=True)
 
     query = """
-    SELECT fi.name, fi.price, fi.category, 
-           ROUND(AVG(fr.rating), 1) AS avg_rating
-    FROM food_items fi
-    LEFT JOIN food_rating fr ON fi.item_id = fr.item_id
-    GROUP BY fi.item_id, fi.name, fi.price, fi.category
-    ORDER BY fi.category, fi.name
+    SELECT fi.name, fi.price, 
+           ROUND(AVG(fr.rating), 1) AS avg_rating,
+           COUNT(fr.rating) AS rating_count
+    FROM food_items AS fi
+    LEFT JOIN food_rating AS fr ON fi.item_id = fr.item_id
+    GROUP BY fi.item_id, fi.name, fi.price
+    ORDER BY fi.name
     """
     cursor.execute(query)
     rows = cursor.fetchall()
 
-    menu = {}
+    food_list = []
     for row in rows:
-        category = row["category"]
-        if category not in menu:
-            menu[category] = []
-        menu[category].append({
+        food_list.append({
             "name": row["name"],
             "price": row["price"],
-            "avg_rating": row["avg_rating"]
+            "avg_rating": row["avg_rating"],
+            "rating_count": row["rating_count"]
         })
 
     cursor.close()
     connection.close()
-    return menu
+    return food_list
+
 
 
     

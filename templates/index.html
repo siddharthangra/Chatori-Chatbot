@@ -34,28 +34,30 @@
         </div>
     </section>
 
+
     <!-- Menu Section -->
     <section id="menu" class="menu">
         <div class="container">
             <h2 class="section-title">Our Delicious Menu</h2>
             <div class="menu-grid">
-                {% for category, items in food_items.items() %}
                 <div class="menu-card">
-                    <h3 style="color: #dc2626; margin-bottom: 1rem;">{{ category }}</h3>
-                    {% for item in items %}
+                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🍽️ Menu</h3>
+                    {% for item in food_items %}
                     <div class="menu-item">
                         <span class="item-name">{{ item.name }}</span>
                         <span class="item-price">₹{{ item.price }}</span>
                         {% if item.avg_rating is not none %}
-                            <span style="margin-left: 10px; color: #f59e0b;">⭐ {{ item.avg_rating | round(1) }}</span>
+                            <span style="margin-left: 10px; color: #f59e0b;">
+                                ⭐ {{ item.avg_rating }} ({{ item.rating_count }} rating{{ 's' if item.rating_count > 1 else '' }})
+                            </span>
                         {% endif %}
                     </div>
                     {% endfor %}
                 </div>
-                {% endfor %}
             </div>
         </div>
     </section>
+
 
 
     <!-- Contact Section -->
