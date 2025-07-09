@@ -127,6 +127,20 @@
                 });
             });
         });
+
+        function toggleChatbot() {
+            const dfMessenger = document.querySelector('df-messenger');
+            if (dfMessenger) {
+                // Method 1: Trigger click on the chat icon (works in most cases)
+                dfMessenger.shadowRoot.querySelector('.chat-icon').click();
+            
+                // Method 2 (fallback): Set the 'open' attribute
+                // dfMessenger.setAttribute('open', 'true');
+            }       
+            else {
+            console.error("Dialogflow Messenger not loaded!");
+                }   
+        }
     </script>
 </body>
 </html>
