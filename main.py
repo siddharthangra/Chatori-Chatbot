@@ -213,9 +213,7 @@ def rating_order(parameters : dict, session_id : str):
             rating_list[session_id][item] = parameters["number"]
             orderlength[session_id] -= 1
             if(orderlength[session_id] == 0):
-                for food_items, rating in rating_list[session_id].items():
-                    database.insert_rating(food_items,rating)
-                del rating_list[session_id]
+                threading.Thread(target=rating_insertion, args=(session_id)).start()
                 fulfillment_text = "Thankyou for your feedback!"
             else:
                 item = items[-(orderlength[session_id])]
@@ -246,3 +244,10 @@ def rating_order(parameters : dict, session_id : str):
     return JSONResponse(content={
         "fulfillmentText" : fulfillment_text
     })
+
+
+def rating_insertion(session_id : str):
+    time.sleep(3)  
+    for food_items, rating in rating_list[session_id].items():
+        database.insert_rating(food_items,rating)
+    del rating_list[session_id]
