@@ -16,12 +16,13 @@ rating_list = {}
 orderlength = {}
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="static")
+templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    food_items = database.get_all_food_items()
+    return templates.TemplateResponse("index.html", {"request": request, "food_items" : food_items})
 
 @app.post("/")
 async def handle_request(request : Request):

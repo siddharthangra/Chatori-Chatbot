@@ -39,60 +39,24 @@
         <div class="container">
             <h2 class="section-title">Our Delicious Menu</h2>
             <div class="menu-grid">
+                {% for category, items in food_items.items() %}
                 <div class="menu-card">
-                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🍛 Main Dishes</h3>
+                    <h3 style="color: #dc2626; margin-bottom: 1rem;">{{ category }}</h3>
+                    {% for item in items %}
                     <div class="menu-item">
-                        <span class="item-name">Pav Bhaji</span>
-                        <span class="item-price">₹6.0</span>
+                        <span class="item-name">{{ item.name }}</span>
+                        <span class="item-price">₹{{ item.price }}</span>
+                        {% if item.avg_rating is not none %}
+                            <span style="margin-left: 10px; color: #f59e0b;">⭐ {{ item.avg_rating | round(1) }}</span>
+                        {% endif %}
                     </div>
-                    <div class="menu-item">
-                        <span class="item-name">Chole Bhature</span>
-                        <span class="item-price">₹7.0</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">Pizza</span>
-                        <span class="item-price">₹8.0</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">Vegetable Biryani</span>
-                        <span class="item-price">₹9.0</span>
-                    </div>
+                    {% endfor %}
                 </div>
-                
-                <div class="menu-card">
-                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🥞 Dosas & Snacks</h3>
-                    <div class="menu-item">
-                        <span class="item-name">Masala Dosa</span>
-                        <span class="item-price">₹6.0</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">Rava Dosa</span>
-                        <span class="item-price">₹7.0</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">Vada Pav</span>
-                        <span class="item-price">₹4.0</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="item-name">Samosa</span>
-                        <span class="item-price">₹5.0</span>
-                    </div>
-                </div>
-                
-                <div class="menu-card">
-                    <h3 style="color: #dc2626; margin-bottom: 1rem;">🥤 Beverages</h3>
-                    <div class="menu-item">
-                        <span class="item-name">Mango Lassi</span>
-                        <span class="item-price">₹5.0</span>
-                    </div>
-                    <div style="text-align: center; padding: 2rem; color: #666;">
-                        <i class="fas fa-glass-cheers" style="font-size: 2rem; color: #fbbf24;"></i>
-                        <p style="margin-top: 1rem;">More drinks available!<br>Ask Chatori for the full menu.</p>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
+
 
     <!-- Contact Section -->
     <section id="contact" class="contact">

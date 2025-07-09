@@ -155,5 +155,37 @@ def insert_rating(food_item, rating):
     cnx.commit()
     cursor.close()
     
+
+def get_all_food_items():
+    connection = get_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    query = """
+    SELECT fi.name, fi.price, fi.category, 
+           ROUND(AVG(fr.rating), 1) AS avg_rating
+    FROM food_items fi
+    LEFT JOIN food_rating fr ON fi.item_id = fr.item_id
+    GROUP BY fi.item_id, fi.name, fi.price, fi.category
+    ORDER BY fi.category, fi.name
+    """
+    cursor.execute(query)
+    rows = cursor.fetchall()
+
+    menu = {}
+    for row in rows:
+        category = row["category"]
+        if category not in menu:
+            menu[category] = []
+        menu[category].append({
+            "name": row["name"],
+            "price": row["price"],
+            "avg_rating": row["avg_rating"]
+        })
+
+    cursor.close()
+    connection.close()
+    return menu
+
+
     
 
